@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthLens - Clear Sight for Every Script</title>
+
+    <style>
+        /* --- Root Variables for Branding and Spacing --- */
+        :root {
+            --primary-color: #007bff; /* Original Blue for actions/branding */
+            --secondary-color: #28a745; /* Original Green for success/buttons */
+            --background-gradient-start: #6dd5ed; /* Lighter blue from logo */
+            --background-gradient-end: #2193b0;   /* Deeper blue from logo */
+            --background-gradient-green-start: #2ecc71; /* Green from logo */
+            --background-gradient-green-end: #28a745; /* Deeper green from logo */
+
+            --card-background: #ffffff;
+            --text-dark: #333333;
+            --text-light-grey: #666666;
+            --shadow-elevation: 0 8px 25px rgba(0, 0, 0, 0.15);
+            --border-radius-card: 18px; /* More rounded corners for the card */
+            --border-radius-button: 8px;
+            --spacing-large: 30px;
+            --spacing-medium: 20px;
+            --spacing-small: 10px;
+        }
+
+        /* --- Global / Body Styling --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            background: linear-gradient(135deg,
+                        var(--background-gradient-start) 0%,
+                        var(--background-gradient-end) 50%,
+                        var(--background-gradient-green-start) 75%,
+                        var(--background-gradient-green-end) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Center content vertically */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Main Content Container (The Card) --- */
+        #main-container {
+            background: var(--card-background);
+            padding: var(--spacing-large);
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--shadow-elevation);
+            max-width: 420px; /* Max width as seen in the image */
+            width: 90%; /* Responsive width */
+            text-align: center; /* Center all text and inline elements */
+            box-sizing: border-box; /* Include padding in width */
+            margin: var(--spacing-medium); /* Ensure some margin on very small screens */
+        }
+
+        /* --- Branding/Title Styling --- */
+        .app-title {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Best common font */
+            font-size: 1.8em; /* Slightly larger, but not too big */
+            font-weight: 700;
+            color: #2c97a5; /* Specific teal color from the image */
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-small);
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            color: var(--text-dark);
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: var(--spacing-large);
+        }
+
+        /* --- Input Selection Zone (Upload/Camera Icons) --- */
+        .input-selection-zone {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-large); /* Space between the two icons */
+            margin-bottom: var(--spacing-large);
+        }
+
+        /* Styles for both the Upload and Camera custom labels */
+        .upload-browse-label,
+        .camera-capture-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            
+            width: 110px; /* Size of the circular buttons */
+            height: 110px; 
+            border-radius: 50%;
+            
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+            background-color: var(--card-background); /* White background for icons */
+        }
+
+        .upload-browse-label:hover,
+        .camera-capture-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Icon Styling */
+        .main-icon {
+            width: 65px; /* Icon size */
+            height: 65px;
+            color: var(--text-dark); /* Dark color for icons */
+            stroke-width: 1.5; /* Slightly thicker stroke for clarity */
+        }
+
+        /* The small text below the icon (hidden in this specific design) */
+        .icon-label {
+            display: none; /* Not visible in the new design */
+        }
+
+        /* --- Simplify Button Styling --- */
+        button { 
+            padding: 14px 25px; 
+            background-color: var(--secondary-color);
+            color: white; 
+            border: none; 
+            border-radius: var(--border-radius-button);
+            cursor: pointer; 
+            font-size: 1.1em;
+            font-weight: bold;
+            background-image: linear-gradient(135deg, #2ecc71, var(--secondary-color));
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+            transition: all 0.2s ease;
+            width: 80%; /* Button width */
+            max-width: 300px; /* Max width for consistency */
+            margin: var(--spacing-large) auto; /* Top and bottom margin */
+            display: block; /* Ensure width applies */
+        }
+        
+        button:hover {
+            background-image: linear-gradient(135deg, #27ae60, #218838);
+            box-shadow: 0 6px 12px rgba(40, 167, 69, 0.4);
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+        }
+
+        /* --- Status and Info Text --- */
+        .info-text {
+            font-size: 0.95em;
+            color: var(--text-light-grey);
+            line-height: 1.5;
+            margin-top: var(--spacing-medium);
+        }
+
+        /* --- Hidden File Inputs --- */
+        #fileInput,
+        #cameraInput {
+            display: none !important;
+        }
+
+        /* --- Responsive Adjustments (Mobile) --- */
+        @media (max-width: 480px) {
+            #main-container {
+                width: 95%; /* Take more width on smaller screens */
+                padding: var(--spacing-medium);
+                margin: var(--spacing-small);
+            }
+            .app-title {
+                font-size: 1.6em;
+            }
+            .tagline {
+                font-size: 1em;
+                margin-bottom: var(--spacing-medium);
+            }
+            .input-selection-zone {
+                gap: var(--spacing-medium);
+            }
+            .upload-browse-label,
+            .camera-capture-label {
+                width: 100px;
+                height: 100px;
+            }
+            .main-icon {
+                width: 60px;
+                height: 60px;
+            }
+            button {
+                width: 90%;
+                margin: var(--spacing-medium) auto;
+            }
+            .info-text {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="main-container">
+        <div class="app-title">HEALTHLENS</div>
+        <p class="tagline">Clear Sight for Every Script:<br> Scan any prescription, label, or leaflet for easy, life-saving translations.</p>
+
+        <div class="input-selection-zone">
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            <label for="fileInput" class="upload-browse-label">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="main-icon">
+                    <path d="M12 16V8M12 8L15 11M12 8L9 11M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </label>
+
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+            <label for="cameraInput" class="camera-capture-label">
+                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="main-icon">
+                    <path d="M3 6V20C3 20.5523 3.44772 21 4 21H20C20.5523 21 21 20.5523 21 20V6C21 5.44772 20.5523 5 20 5H17.5L16.2929 3.79289C15.9024 3.40237 15.3724 3.19526 14.8284 3.19526H9.17157C8.62758 3.19526 8.09758 3.40237 7.70711 3.79289L6.5 5H4C3.44772 5 3 5.44772 3 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 17C14.2091 17 16 15.2091 16 13C16 10.7909 14.2091 9 12 9C9.79086 9 8 10.7909 8 13C8 15.2091 9.79086 17 12 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </label>
+        </div>
+        
+        <button onclick="handleImageUpload()">Simplify My Rx</button>
+        
+        <p class="info-text" id="statusAndInfo">Upload a label or leaflet by clicking an icon above, then simplify it instantly.</p>
+
+    </div>
+
+    <script>
+        // Store selected file globally for handleImageUpload to access
+        let selectedFile = null;
+
+        // Event listener for the "Upload File" icon
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            if (event.target.files && event.target.files.length > 0) {
+                selectedFile = event.target.files[0];
+                document.getElementById('statusAndInfo').textContent = `File selected: ${selectedFile.name}. Click "Simplify My Rx" to process.`;
+                highlightSelectedIcon('fileInput');
+            }
+        });
+
+        // Event listener for the "Camera" icon
+        document.getElementById('cameraInput').addEventListener('change', function(event) {
+            if (event.target.files && event.target.files.length > 0) {
+                selectedFile = event.target.files[0];
+                document.getElementById('statusAndInfo').textContent = `Photo captured: ${selectedFile.name || 'Image'}. Click "Simplify My Rx" to process.`;
+                highlightSelectedIcon('cameraInput');
+            }
+        });
+
+        // Helper to highlight the active icon (optional visual feedback)
+        function highlightSelectedIcon(inputId) {
+            document.querySelectorAll('.upload-browse-label, .camera-capture-label').forEach(label => {
+                label.style.borderColor = 'transparent'; // Reset all borders
+                label.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)'; // Reset shadow
+            });
+            const activeLabel = document.querySelector(`label[for="${inputId}"]`);
+            if (activeLabel) {
+                activeLabel.style.borderColor = 'var(--primary-color)'; // Highlight border
+                activeLabel.style.boxShadow = '0 0 0 3px var(--primary-color), 0 2px 10px rgba(0, 0, 0, 0.1)'; // Stronger shadow
+            }
+        }
+
+
+    // Main function to handle the image upload and API call
+async function handleImageUpload() {
+    const statusElement = document.getElementById('statusAndInfo');
+    
+    if (!selectedFile) {
+        statusElement.textContent = "❌ Please select an image file or take a photo first.";
+        return;
+    }
+
+    statusElement.textContent = "⏳ Processing image and simplifying instructions...";
+    statusElement.style.textAlign = 'center'; // Center status text during load
+    
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+
+    reader.onload = async function () {
+        const base64Image = reader.result;
+
+        try {
+            const response = await fetch('http://127.0.0.1:5000/simplify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image_data: base64Image }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // --- NEW OUTPUT CLEANUP LOGIC ---
+                let rawText = data.simplified_text || "";
+                
+                // 1. Remove all instances of '**5th Grader**' and similar phrases (e.g., in the warning)
+                rawText = rawText.replace(/5th Grade(r)?(\s)?(Explanation)?/gmi, 'User');
+                rawText = rawText.replace(/Remember, an adult should always help you with your medicines/gmi, 'Always consult a healthcare professional.');
+                rawText = rawText.replace(/Health Educator's Simplified Explanation/gmi, 'Simplified Instructions');
+
+                // 2. Replace the double asterisks for bolding (**word**) with <strong>word</strong>
+                // This must be done BEFORE step 3
+                rawText = rawText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                
+                // 3. Replace all newlines with <br> or wrap blocks in <p> tags
+                // A simple approach: replace double newlines with closing/opening <p> tags, and single newlines with <br>
+                let formattedText = rawText.trim();
+                formattedText = formattedText.replace(/###/g, '<br><br><strong>'); // Use strong for headings
+                formattedText = formattedText.replace(/\* /g, '<br>• '); // Convert list markers to proper list items
+                
+                // Final display: wrap everything in a dedicated output div for clarity
+                statusElement.innerHTML = `✅ <strong>Processing Complete!</strong><br><br>`;
+                statusElement.innerHTML += '<div class="output-display-box" style="text-align: left; padding: 15px; border: 1px solid #ccc; border-radius: 8px; margin-top: 10px;">' + formattedText + '</div>';
+
+
+            } else {
+                statusElement.textContent = '❌ Error simplifying prescription: ' + data.error;
+                statusElement.style.textAlign = 'center';
+            }
+
+        } catch (error) {
+            statusElement.textContent = '🛑 A connection error occurred. Please ensure your backend server (app.py) is running.';
+            statusElement.style.textAlign = 'center';
+        }
+    };
+    reader.onerror = () => {
+        statusElement.textContent = "❌ Error reading the file.";
+        statusElement.style.textAlign = 'center';
+    };
+}    
+    </script>
+</body>
+</html>
